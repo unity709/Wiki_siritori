@@ -28,7 +28,6 @@
         //使用する変数を用意
         $("#submit").click(function () {
             var text = $("#text").val();
-            
             $("#btn").prop("disabled", true);
             $("#btn").text("処理中");
             $("#submit").prop("disabled", true);
@@ -53,7 +52,8 @@
                 msg.text = value;
 
                 window.speechSynthesis.speak(msg);
-                console.log("処理終了")
+                console.log("処理終了");
+                $("#text").val("");
                 $("#submit").prop("disabled",false);
                 $("#btn").prop("disabled", false);
                 $("#btn").text("マイクで録音");
@@ -61,6 +61,7 @@
             }).catch(function (error) {
                 // 非同期処理失敗。呼ばれない
                 console.log(error);
+                $("#text").val("");
                 $("#btn").prop("disabled", false);
                 $("#submit").prop("disabled", false);
                 $("#btn").text("マイクで録音");
