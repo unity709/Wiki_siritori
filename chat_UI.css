@@ -1,0 +1,153 @@
+/*——————–
+ 吹き出しを作る
+——————–*/
+/* 全体のスタイル */
+.kaiwa {
+  margin-bottom: 35px;
+}
+/* 左画像 */
+.kaiwa-img-left {
+  margin: 0;
+  float: left;
+  width: 60px;
+  height: 60px;
+  margin-right: -70px;
+}
+/* 右画像 */
+.kaiwa-img-right {
+  margin: 0;
+  margin-right: 10px;
+  float: right;
+  width: 60px;
+  height: 60px;
+  margin-left: -70px;
+}
+.kaiwa figure img {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #aaa;
+  border-radius: 50%;
+  margin: 0;
+}
+/* 画像の下のテキスト */
+.kaiwa-img-description {
+  padding: 20px 0 0;
+  font-size: 12px;
+  text-align: center;
+  position: relative;
+  bottom: 15px;
+}
+/* 左からの吹き出しテキスト */
+.kaiwa-text-right {
+  position: relative;
+  margin-left: 80px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #eee;
+  margin-right: 20%;
+  float: left;
+}
+/* 右からの吹き出しテキスト */
+.kaiwa-text-left {
+  position: relative;
+  margin-right: 80px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #9cd6e7;
+  margin-left: 20%;
+  float: right;
+}
+p.kaiwa-text {
+  margin: 0 0 20px;
+}
+p.kaiwa-text:last-child {
+  margin-bottom: 0;
+}
+/* 左の三角形を作る */
+.kaiwa-text-right:before {
+  position: absolute;
+  content: '';
+  border: 10px solid transparent;
+  top: 15px;
+  left: -20px;
+}
+.kaiwa-text-right:after {
+  position: absolute;
+  content: '';
+  border: 10px solid transparent;
+  border-right: 10px solid #eee;
+  top: 15px;
+  left: -19px;
+}
+/* 右の三角形を作る */
+.kaiwa-text-left:before {
+  position: absolute;
+  content: '';
+  border: 10px solid transparent;
+  top: 15px;
+  right: -20px;
+}
+.kaiwa-text-left:after {
+  position: absolute;
+  content: '';
+  border: 10px solid transparent;
+  border-left: 10px solid #9cd6e7;
+  top: 15px;
+  right: -19px;
+}
+/* 回り込み解除 */
+.kaiwa:after,.kaiwa:before {
+  clear: both;
+  content: "";
+  display: block;
+}
+#text{
+  resize: none;
+  float: left;
+  margin-right: 10px;
+}
+#chat-box{
+  height: 500px;
+  overflow-y: scroll;
+  
+}
+#btn,#submit{
+  margin-left: 10px;
+  margin-bottom: 50px;
+}
+#btn,#submit {
+  border-radius: 25px;
+  position: relative;
+  display: inline-block;
+  font-weight: bold;
+  padding: 0.25em 0.5em;
+  text-decoration: none;
+  color: #FFF;
+  background: #00bcd4;
+  transition: .4s;
+  border-bottom: solid 4px #627295;
+}
+
+#submit:hover {
+  background:#00ff00;
+}
+#btn:hover {
+  background:#ff0000;
+}
+#btn:active{
+  /*ボタンを押したとき*/
+  -webkit-transform: translateY(4px);
+  transform: translateY(4px);/*下に動く*/
+  border-bottom: none;/*線を消す*/
+}
+#submit:active{
+  /*ボタンを押したとき*/
+  -webkit-transform: translateY(4px);
+  transform: translateY(4px);/*下に動く*/
+  border-bottom: none;/*線を消す*/
+}
+::placeholder{
+  color:#ff0000;
+  opacity:0.5;
+  font-size: 18px;
+}

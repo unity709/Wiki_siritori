@@ -3,411 +3,61 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>しりとり</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>しりとり AI</title>
+    <link rel="stylesheet" href="chat_UI.css">
+    <script src="https://kit.fontawesome.com/ede971a779.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <h2>しりとりサンプル</h2>
-    <input type="text" name="" id="text">
-    <button id="submit">送信</button>
-    <p><button id="btn">マイクで録音</button></p>
-    <ul id="content"></ul>
+    
     <script src="./jquery-3.4.1.min.js"></script>
-    <script>
-        var msg = new SpeechSynthesisUtterance();
-        msg.lang = 'ja-JP'; //言語
-        msg.volume = 1; //ボリューム
-        msg.rate = 1;  //レート
-        msg.pitch = 1; //ピッチ
-        var words = [];
-        var cpu_word = "";
-        //音声認識の準備
-        const speech = new webkitSpeechRecognition();
-        speech.lang = "ja-JP";
-        speech.continuous = true;
-        //使用する変数を用意
-        $("#submit").click(function () {
-            var text = $("#text").val();
-            $("#btn").prop("disabled", true);
-            $("#btn").text("処理中");
-            $("#submit").prop("disabled", true);
-            $("#submit").text("処理中");
-            console.log("リザルト")
-            console.log(text);//textが結果
-            //ここから返答処理
-            $("#content").html("<li class='list'>" + text + " ==> 考え中</li>" + $("#content").html());
+    <div id="chat-box">
+        
+        
+        
+        
+        
+            <div class="kaiwa"><!–左からの吹き出し–>
+                <figure class="kaiwa-img-left">
+                    <img src="./icons/Wikipedia-logo-v2-ja.png" alt="no-img2">
+                    <figcaption class="kaiwa-img-description">
+                        しりとり AI
+                    </figcaption>
+                </figure>
+                <div class="kaiwa-text-right">
+                    <p class="kaiwa-text">
+                        こんにちは。僕はしりとりAIだよ。<br>
+                        Wikipediaから集めたデータを使ってしりとりができるよ。<br>
+                        じゃあ、始めるよ～
+                    </p>
+                </div>
+            </div><!–左からの吹き出し 終了–>
 
-            //処理が終わったら考え中の文字を削除し、結果を入れる
-
-            siritori(text).then(function (value) {
-                // 非同期処理成功
-                console.log(value);
-                $(".list").each(function (i, o) {
-                    if (i == 0) {
-                        $(o).html($(o).text().slice(0, -3) + value);
-                    }
-                });
-
-
-                msg.text = value;
-
-                window.speechSynthesis.speak(msg);
-                console.log("処理終了");
-                $("#text").val("");
-                $("#submit").prop("disabled",false);
-                $("#btn").prop("disabled", false);
-                $("#btn").text("マイクで録音");
-                $("#submit").text("送信");
-            }).catch(function (error) {
-                // 非同期処理失敗。呼ばれない
-                console.log(error);
-                $("#text").val("");
-                $("#btn").prop("disabled", false);
-                $("#submit").prop("disabled", false);
-                $("#btn").text("マイクで録音");
-                $("#submit").text("送信");
-            });
-
-
-
-
-
-
-        })
-        $("#btn").click(function () {
-            // 音声認識をスタート
-            $("#btn").prop("disabled", true);
-            $("#btn").text("マイクで録音中");
-            $("#submit").prop("disabled", true);
-            speech.start();
-
-        });
-        speech.onnomatch = function () {
-            console.log("認識できませんでした");
-            $("#btn").prop("disabled", false);
-            $("#btn").text("マイクで録音");
-            $("#submit").prop("disabled", false);
-            $("#submit").text("送信");
-        };
-        speech.onerror = function () {
-            console.log("認識できませんでした");
-            $("#btn").prop("disabled", false);
-            $("#btn").text("マイクで録音");
-            $("#submit").prop("disabled", false);
-            $("#submit").text("送信");            
-        };
-        //音声自動文字起こし機能
-        speech.onresult = function (e) {
-            $("#btn").text("処理中");
-            $("#submit").prop("disabled", true);
-            $("#submit").text("処理中");
-            console.log("リザルト")
-            speech.stop();
-            if (e.results[0].isFinal) {
-                console.log("聞き取り成功！")
-                var autotext = e.results[0][0].transcript
-                console.log(e);
-                console.log(autotext);//autotextが結果
-                //ここから返答処理
-                $("#content").html("<li class='list'>" + autotext + " ==> 考え中</li>" + $("#content").html());
-
-                //処理が終わったら考え中の文字を削除し、結果を入れる
-
-                siritori(autotext).then(function (value) {
-                    // 非同期処理成功
-                    console.log(value);
-                    $(".list").each(function (i, o) {
-                        if (i == 0) {
-                            $(o).html($(o).text().slice(0, -3) + value);
-                        }
-                    });
-
-
-                    msg.text = value;
-
-                    window.speechSynthesis.speak(msg);
-                    console.log("処理終了")
-                    $("#btn").prop("disabled", false);
-                    $("#btn").text("マイクで録音");
-                    $("#submit").prop("disabled", false);
-                    $("#submit").text("送信");
-                }).catch(function (error) {
-                    // 非同期処理失敗。呼ばれない
-                    console.log(error);
-                    $("#btn").prop("disabled", false);
-                    $("#btn").text("マイクで録音");
-                    $("#submit").prop("disabled", false);
-                    $("#submit").text("送信");
-                });
-
-
-
-
-
-            }
-
-        }
-        function siritori(user_msg) {
-            return new Promise(function (resolve, reject) {
-                words = [];
-
-                var taskA = new Promise(function (resolve, reject) {
-                    WikipediaAPI(str_chenge(user_msg, "katakana"), resolve);
-                });
-                var taskB = new Promise(function (resolve, reject) {
-                    WikipediaAPI(str_chenge(user_msg, "hiragana"), resolve);
-                });
-                Promise.all([taskA, taskB]).then(function () {
-                    console.log(words);
-                    cpu_word = words[Math.floor(Math.random() * words.length)]
-                    resolve(cpu_word);
-                })
-
-
-            });
-
-        }
-        function WikipediaAPI(query, end) {
-            var kanzi = ["論", "缶", "天", "点", "覧", "案", "暗", "全", "員", "印", "院", "因", "引", "飲", "運", "温", "円", "縁", "園"
-                , "延", "塩", "遠", "音", "恩", "韓", "艦", "金", "菌", "禁", "筋", "君", "勲", "訓", "県", "兼", "券", "件", "剣", "健", "圏"
-                , "紺", "産", "酸", "山", "算", "新", "臣", "癌", "玩", "寸", "損", "村", "短", "痰", "担", "沈", "陳", "賃", "典", "品", "貧"
-                , "分", "糞", "墳", "粉", "編", "辺", "本", "南", "認", "燃", "粘", "万", "満", "民", "眠", "面", "麺", "綿", "紋", "悶", "四"
-                , "欄", "乱", "卵", "覧", "濫", "林", "倫", "麟", "錬", "連", "練", "恋", "湾", "椀", "腕"];
-            //API呼び出し
-            console.log(query)
-            $.ajax({
-                type: "GET",
-                timeout: 10000,
-                dataType: "jsonp",
-                url: "https://ja.wikipedia.org/w/api.php?format=json&action=query&list=prefixsearch&pssearch=" + query + "&pslimit=200&psnamespace=0",
-                async: false,
-                success: function (json) {
-                    console.log(json)
-                    json.query.prefixsearch.forEach(function (value) {
-                        if (value.title != query) {
-
-                            var word = value.title;
-                            word = word.replace(/ *\([^)]*\) */g, "");
-                            if (word.slice(-1) != "ん" && word.slice(-1) != "ン" && kanzi.indexOf(word.slice(-1)) == -1) {
-                                words.push(word);
-                            }
-
-                        }
-                    });
-                    end();
-                }
-            });
-
-        }
-        function str_chenge(str, opt) {
-            var hiragana = ["あ", "い", "う", "え", "お",
-                "か", "き", "く", "け", "こ",
-                "さ", "し", "す", "せ", "そ",
-                "た", "ち", "つ", "て", "と",
-                "な", "に", "ぬ", "ね", "の",
-                "は", "ひ", "ふ", "へ", "ほ",
-                "ま", "み", "む", "め", "も",
-                "や", "ゆ", "よ",
-                "わ", "を", "ん",
-                "ぁ", "ぃ", "ぅ", "ぇ", "ぉ",
-                "っ",
-                "ゃ", "ゅ", "ょ",]
-            var katakana = ["ア", "イ", "ウ", "エ", "オ",
-                "カ", "キ", "ク", "ケ", "コ",
-                "サ", "シ", "ス", "セ", "ソ",
-                "タ", "チ", "ツ", "テ", "ト",
-                "ナ", "ニ", "ヌ", "ネ", "ノ",
-                "ハ", "ヒ", "フ", "ヘ", "ホ",
-                "マ", "ミ", "ム", "メ", "モ",
-                "ヤ", "ユ", "ヨ",
-                "ワ", "ヲ", "ン",
-                "ァ", "ィ", "ゥ", "ェ", "ォ",
-                "ッ",
-                "ャ", "ュ", "ョ",]
-            var r;
-            // APIコール回数節約のため元から最後の文字が ひらがな OR カタカナ ならAPIをコールしない
-            if ((opt == "hiragana" && hiragana.indexOf(str.slice(-1)) != -1) || (opt == "katakana" && katakana.indexOf(str.slice(-1)) != -1)) {
-                //変換の必要がない場合
-                if (str.slice(-1)=="ー") {
-                    r = str.slice(-2);
-                    r=r.slice(0,1);
-                }else{
-                    r = str.slice(-1);
-                }
-                
-                switch (r) {
-                    case "ぁ":
-                        r = "あ";
-                        break;
-                    case "ぃ":
-                        r = "い";
-                        break;
-                    case "ぅ":
-                        r = "う";
-                        break;
-                    case "ぇ":
-                        r = "え";
-                        break;
-                    case "ぉ":
-                        r = "お";
-                        break;
-                    case "っ":
-                        r = "つ";
-                        break;
-                    case "ゃ":
-                        r = "や";
-                        break;
-                    case "ゅ":
-                        r = "ゆ";
-                        break;
-                    case "ょ":
-                        r = "よ";
-                        break;
-                    case "ゎ":
-                        r = "わ";
-                        break;
-                    case "ァ":
-                        r = "ア";
-                        break;
-                    case "ィ":
-                        r = "イ";
-                        break;
-                    case "ゥ":
-                        r = "ウ";
-                        break;
-                    case "ェ":
-                        r = "エ";
-                        break;
-                    case "ォ":
-                        r = "オ";
-                        break;
-                    case "ヵ":
-                        r = "カ";
-                        break;
-                    case "ヶ":
-                        r = "ケ";
-                        break;
-                    case "ッ":
-                        r = "ツ";
-                        break;
-                    case "ャ":
-                        r = "ヤ";
-                        break;
-                    case "ュ":
-                        r = "ユ";
-                        break;
-                    case "ョ":
-                        r = "ヨ";
-                        break;
-                    case "ヮ":
-                        r = "ワ";
-                        break;
-                    default:
-                        break;
-                }
-            } else {
-                //変換の必要がある場合
-                $.ajax({
-                    type: 'POST',
-                    timeout: 10000,
-                    url: "https://labs.goo.ne.jp/api/hiragana",
-                    async: false,
-                    'headers': {
-                        'Content-Type': "application/json",
-                    },
-                    data: JSON.stringify({
-                        'app_id': '7e6a1cf050d53f86f5530bc2c222c6084e888fadacfb14b0c5617bcf091975d1',
-                        'sentence': str,
-                        'output_type': opt
-                    }),
-                }).done(function (data) {
-                    if (data.converted.slice(-1)=="ー") {
-                        r = data.converted.slice(-2);
-                        r=r.slice(0,1);
-                }else{
-                    r = data.converted.slice(-1);
-                    
-                }
-                    
-
-                    switch (r) {
-                        case "ぁ":
-                            r = "あ";
-                            break;
-                        case "ぃ":
-                            r = "い";
-                            break;
-                        case "ぅ":
-                            r = "う";
-                            break;
-                        case "ぇ":
-                            r = "え";
-                            break;
-                        case "ぉ":
-                            r = "お";
-                            break;
-                        case "っ":
-                            r = "つ";
-                            break;
-                        case "ゃ":
-                            r = "や";
-                            break;
-                        case "ゅ":
-                            r = "ゆ";
-                            break;
-                        case "ょ":
-                            r = "よ";
-                            break;
-                        case "ゎ":
-                            r = "わ";
-                            break;
-                        case "ァ":
-                            r = "ア";
-                            break;
-                        case "ィ":
-                            r = "イ";
-                            break;
-                        case "ゥ":
-                            r = "ウ";
-                            break;
-                        case "ェ":
-                            r = "エ";
-                            break;
-                        case "ォ":
-                            r = "オ";
-                            break;
-                        case "ヵ":
-                            r = "カ";
-                            break;
-                        case "ヶ":
-                            r = "ケ";
-                            break;
-                        case "ッ":
-                            r = "ツ";
-                            break;
-                        case "ャ":
-                            r = "ヤ";
-                            break;
-                        case "ュ":
-                            r = "ユ";
-                            break;
-                        case "ョ":
-                            r = "ヨ";
-                            break;
-                        case "ヮ":
-                            r = "ワ";
-                            break;
-                        default:
-                            break;
-                    }
-
-                });
-            }
-
-            console.log(r);
-            return r;
-        }
-    </script>
+            <div class="kaiwa">
+                <figure class="kaiwa-img-left">
+                    <img src="./icons/Wikipedia-logo-v2-ja.png" alt="no-img2">
+                    <figcaption class="kaiwa-img-description">
+                        しりとり AI
+                    </figcaption>
+                </figure>
+                <div class="kaiwa-text-right">
+                    <p class="kaiwa-text">
+                        「しりとり」
+                    </p>
+                </div>
+            </div>
+    </div>
+    <div id="form">
+        <textarea id="text" cols="30" rows="3" placeholder="「り」から始まる言葉"></textarea>
+        <div id="buttons">
+            <button id="submit"><i class="far fa-paper-plane"></i> <span id="submit_text">送信</span></button>
+            <button id="btn"><i class="fas fa-microphone"></i> <span id="btn_text">マイク</span></button>
+            
+        </div>
+    </div>
+    
+    <script src="./siritori.js"></script>
 </body>
 
 </html>
