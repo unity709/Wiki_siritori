@@ -5,6 +5,7 @@ msg.rate = 1;  //レート
 msg.pitch = 1; //ピッチ
 var words = [];
 var cpu_word = "";
+var next_word="り";
 //音声認識の準備
 const obj = document.getElementById("chat-box");
 const speech = new webkitSpeechRecognition();
@@ -27,28 +28,8 @@ $("#submit").click(function () {
     $("#chat-box").html($("#chat-box").html() + "<div class=\"kaiwa\"><!–右からの吹き出し–><figure class=\"kaiwa-img-right\"><img src=\"./icons/human_icon.png\" alt=\"no-img2\"><figcaption class=\"kaiwa-img-description\">あなた</figcaption></figure><div class=\"kaiwa-text-left\"><p class=\"kaiwa-text\">「" + text + "」</p></div></div><!–右からの吹き出し 終了–>");
     obj.scrollTop = obj.scrollHeight;
     //処理が終わったら考え中の文字を削除し、結果を入れる
-    siritori(text).then(function (value) {
-        // 非同期処理成功
-        console.log(value);
-        $("#text").attr("placeholder", "「" + str_chenge(value)[0] + "」から始まる言葉");
-
-        say(value, $("#chat-box"))
-
-        obj.scrollTop = obj.scrollHeight;
-        msg.text = value;
-        window.speechSynthesis.speak(msg);
-        console.log("処理終了");
-        $("#text").val("");
-        $("#submit").prop("disabled", false);
-        $("#btn").prop("disabled", false);
-        $("#btn_text").text("マイク");
-        $("#submit_text").text("送信");
-        $("#btn").css('background-color','#00bcd4');
-        $("#submit").css('background-color','#00bcd4');
-    }).catch(function (error) {
-        // 非同期処理失敗。呼ばれない
-        console.log(error);
-        say("エラーが起きました", $("#chat-box"))
+    if (next_word!=str_chenge(text,1)[0]) {
+        say("「"+next_word+"」から言葉を始めてね！", $("#chat-box"));
         $("#text").val("");
         $("#btn").prop("disabled", false);
         $("#submit").prop("disabled", false);
@@ -56,7 +37,40 @@ $("#submit").click(function () {
         $("#submit_text").text("送信");
         $("#btn").css('background-color','#00bcd4');
         $("#submit").css('background-color','#00bcd4');
-    });
+        return ;
+    } else {
+        siritori(text).then(function (value) {
+            // 非同期処理成功
+            console.log(value);
+            $("#text").attr("placeholder", "「" + str_chenge(value,-1)[0] + "」から始まる言葉");
+            next_word=str_chenge(value,-1)[0]
+            say("「"+value+"」", $("#chat-box"))
+    
+            obj.scrollTop = obj.scrollHeight;
+            msg.text = value;
+            window.speechSynthesis.speak(msg);
+            console.log("処理終了");
+            $("#text").val("");
+            $("#submit").prop("disabled", false);
+            $("#btn").prop("disabled", false);
+            $("#btn_text").text("マイク");
+            $("#submit_text").text("送信");
+            $("#btn").css('background-color','#00bcd4');
+            $("#submit").css('background-color','#00bcd4');
+        }).catch(function (error) {
+            // 非同期処理失敗。呼ばれない
+            console.log(error);
+            say("エラーが起きました", $("#chat-box"))
+            $("#text").val("");
+            $("#btn").prop("disabled", false);
+            $("#submit").prop("disabled", false);
+            $("#btn_text").text("マイク");
+            $("#submit_text").text("送信");
+            $("#btn").css('background-color','#00bcd4');
+            $("#submit").css('background-color','#00bcd4');
+        });
+    }
+    
 
 
 
@@ -108,16 +122,28 @@ speech.onresult = function (e) {
         console.log(e);
         console.log(autotext);//autotextが結果
         //ここから返答処理
+        
         $("#chat-box").html($("#chat-box").html() + "<div class=\"kaiwa\"><!–右からの吹き出し–><figure class=\"kaiwa-img-right\"><img src=\"./icons/human_icon.png\" alt=\"no-img2\"><figcaption class=\"kaiwa-img-description\">あなた</figcaption></figure><div class=\"kaiwa-text-left\"><p class=\"kaiwa-text\">「" + autotext + "」</p></div></div><!–右からの吹き出し 終了–>");
         obj.scrollTop = obj.scrollHeight;
         //処理が終わったら考え中の文字を削除し、結果を入れる
-
-        siritori(autotext).then(function (value) {
+        if (next_word!=str_chenge(text,1)[0]) {
+            say("「"+next_word+"」から言葉を始めてね！", $("#chat-box"));
+            $("#text").val("");
+            $("#btn").prop("disabled", false);
+            $("#submit").prop("disabled", false);
+            $("#btn_text").text("マイク");
+            $("#submit_text").text("送信");
+            $("#btn").css('background-color','#00bcd4');
+            $("#submit").css('background-color','#00bcd4');
+            return ;
+        }else{
+            siritori(autotext).then(function (value) {
             // 非同期処理成功
             console.log(value);
-            $("#text").attr("placeholder", "「" + str_chenge(value)[0] + "」から始まる言葉");
+            $("#text").attr("placeholder", "「" + str_chenge(value,-1)[0] + "」から始まる言葉");
+            next_word=str_chenge(value,-1)[0]
 
-            say(value, $("#chat-box"))
+            say("「"+value+"」", $("#chat-box"))
             obj.scrollTop = obj.scrollHeight;
             msg.text = value;
 
@@ -138,7 +164,9 @@ speech.onresult = function (e) {
             $("#btn_text").text("マイク");
             $("#submit").prop("disabled", false);
             $("#submit_text").text("送信");
-        });
+        });}
+
+        
 
 
 
@@ -150,7 +178,7 @@ speech.onresult = function (e) {
 function siritori(user_msg) {
     return new Promise(function (resolve, reject) {
         words = [];
-        var chenges = str_chenge(user_msg)
+        var chenges = str_chenge(user_msg,-1)
         var taskA = new Promise(function (resolve, reject) {
             WikipediaAPI(chenges[0], resolve);
         });
@@ -168,11 +196,11 @@ function siritori(user_msg) {
 
 }
 function WikipediaAPI(query, end) {
-    var kanzi = ["論", "缶", "天", "点", "覧", "案", "暗", "全", "員", "印", "院", "因", "引", "飲", "運", "温", "円", "縁", "園"
+    var NG_word = ["論", "缶", "天", "点", "覧", "案", "暗", "全", "員", "印", "院", "因", "引", "飲", "運", "温", "円", "縁", "園"
         , "延", "塩", "遠", "音", "恩", "韓", "艦", "金", "菌", "禁", "筋", "君", "勲", "訓", "県", "兼", "券", "件", "剣", "健", "圏"
         , "紺", "産", "酸", "山", "算", "新", "臣", "癌", "玩", "寸", "損", "村", "短", "痰", "担", "沈", "陳", "賃", "典", "品", "貧"
         , "分", "糞", "墳", "粉", "編", "辺", "本", "南", "認", "燃", "粘", "万", "満", "民", "眠", "面", "麺", "綿", "紋", "悶", "四"
-        , "欄", "乱", "卵", "覧", "濫", "林", "倫", "麟", "錬", "連", "練", "恋", "湾", "椀", "腕"];
+        , "欄", "乱", "卵", "覧", "濫", "林", "倫", "麟", "錬", "連", "練", "恋", "湾", "椀", "腕","ん","ン"];
     //API呼び出し
     console.log(query)
     $.ajax({
@@ -188,7 +216,7 @@ function WikipediaAPI(query, end) {
 
                     var word = value.title;
                     word = word.replace(/ *\([^)]*\) */g, "");
-                    if (word.slice(-1) != "ん" && word.slice(-1) != "ン" && kanzi.indexOf(word.slice(-1)) == -1) {
+                    if (NG_word.indexOf(word.slice(-1)) == -1) {
                         words.push(word);
                     }
 
@@ -199,7 +227,14 @@ function WikipediaAPI(query, end) {
     });
 
 }
-function str_chenge(str) {
+function str_chenge(str,ran) {
+    var range=ran
+    if (range==1) {
+        range=[0,1]
+
+    }else{
+        range=[-1,undefined]
+    }
     const hiragana = ["あ", "い", "う", "え", "お",
         "か", "き", "く", "け", "こ",
         "さ", "し", "す", "せ", "そ",
@@ -235,19 +270,17 @@ function str_chenge(str) {
         "バ", "ビ", "ブ", "ベ", "ボ",]
     var r = [];
     var func_str = str;
-    if (func_str.slice(-1) == "ー") {
+    if (func_str.slice(range[0],range[1]) == "ー"||func_str.slice(range[0],range[1]) == "-"||func_str.slice(range[0],range[1]) == "!"||func_str.slice(range[0],range[1]) == "?"||func_str.slice(range[0],range[1]) == "！"||func_str.slice(range[0],range[1]) == "？") {
         func_str = func_str.slice(-2);
         func_str = func_str.slice(0, 1);
-    } else {
-        func_str = func_str.slice(-1);
     }
-    if (hiragana.indexOf(func_str.slice(-1)) != -1) {//ひらがな
-        r.push(func_str.slice(-1));
-        r.push(katakana[hiragana.indexOf(func_str.slice(-1))]);
+    if (hiragana.indexOf(func_str.slice(range[0],range[1])) != -1) {//ひらがな
+        r.push(func_str.slice(range[0],range[1]));
+        r.push(katakana[hiragana.indexOf(func_str.slice(range[0],range[1]))]);
         console.log(r)
-    } else if (katakana.indexOf(str.slice(-1)) != -1) {//カタカナ
-        r.push(hiragana[katakana.indexOf(func_str.slice(-1))]);
-        r.push(func_str.slice(-1));
+    } else if (katakana.indexOf(str.slice(range[0],range[1])) != -1) {//カタカナ
+        r.push(hiragana[katakana.indexOf(func_str.slice(range[0],range[1]))]);
+        r.push(func_str.slice(range[0],range[1]));
 
         console.log(r)
     } else {//漢字
@@ -266,15 +299,15 @@ function str_chenge(str) {
             }),
         }).done(function (data) {
             func_str = data.converted;
-            if (func_str.slice(-1) == "ー") {
+            if (func_str.slice(range[0],range[1]) == "ー") {
                 func_str = func_str.slice(-2);
                 func_str = func_str.slice(0, 1);
             } else {
-                func_str = func_str.slice(-1);
+                func_str = func_str.slice(range[0],range[1]);
 
             }
-            r.push(func_str.slice(-1));
-            r.push(katakana[hiragana.indexOf(func_str.slice(-1))]);
+            r.push(func_str.slice(range[0],range[1]));
+            r.push(katakana[hiragana.indexOf(func_str.slice(range[0],range[1]))]);
             console.log(r)
         });
     }
@@ -358,5 +391,5 @@ function str_chenge(str) {
     return r;
 }
 function say(text, element) {
-    element.html(element.html() + "<div class=\"kaiwa\"><!–左からの吹き出し–><figure class=\"kaiwa-img-left\"><img src=\"./icons/Wikipedia-logo-v2-ja.png\" alt=\"no-img2\"><figcaption class=\"kaiwa-img-description\">しりとり AI</figcaption></figure><div class=\"kaiwa-text-right\"><p class=\"kaiwa-text\">「" + text + "」</p></div></div><!–左からの吹き出し 終了–>")
+    element.html(element.html() + "<div class=\"kaiwa\"><!–左からの吹き出し–><figure class=\"kaiwa-img-left\"><img src=\"./icons/Wikipedia-logo-v2-ja.png\" alt=\"no-img2\"><figcaption class=\"kaiwa-img-description\">しりとり AI</figcaption></figure><div class=\"kaiwa-text-right\"><p class=\"kaiwa-text\">" + text + "</p></div></div><!–左からの吹き出し 終了–>")
 }
