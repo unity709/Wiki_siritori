@@ -11,25 +11,10 @@
 </head>
 
 <body>
-    <script>
-        if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./serviceworker.js').then(function(registration) {
-        // Serviceworkerが機能出来ていると、開発者ツールのログは表示されます。。アプリ上には表示されません。
-        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        }).catch(function(err) {
-        // Serviceworkerが機能できなかった時に、開発者ツールのログでerror表示がされます。どこかにエラーが出ているから確認してください。
-        console.log('ServiceWorker registration failed: ', err);
-        });
-        }
-        </script>
     <script src="./jquery-3.4.1.min.js"></script>
     <div id="chat-box">
-        
-        
-        
-        
-        
-            <div class="kaiwa"><!–左からの吹き出し–>
+        <div class="kaiwa">
+            <!–左からの吹き出し–>
                 <figure class="kaiwa-img-left">
                     <img src="./icons/Wikipedia-logo-v2-ja.png" alt="no-img2">
                     <figcaption class="kaiwa-img-description">
@@ -43,7 +28,8 @@
                         じゃあ、始めるよ～
                     </p>
                 </div>
-            </div><!–左からの吹き出し 終了–>
+        </div>
+        <!–左からの吹き出し 終了–>
 
             <div class="kaiwa">
                 <figure class="kaiwa-img-left">
@@ -64,10 +50,10 @@
         <div id="buttons">
             <button id="submit"><i class="far fa-paper-plane"></i> <span id="submit_text">送信</span></button>
             <button id="btn"><i class="fas fa-microphone"></i> <span id="btn_text">マイク</span></button>
-            
+
         </div>
     </div>
-    
+
     <script src="./siritori.js"></script>
 </body>
 
