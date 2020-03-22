@@ -7,10 +7,20 @@
     <title>しりとり AI</title>
     <link rel="stylesheet" href="chat_UI.css">
     <script src="https://kit.fontawesome.com/ede971a779.js" crossorigin="anonymous"></script>
+    <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
-    
+    <script>
+        //  <!-- service workerの登録関係 -->
+        if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service_worker.js').then(function(registration) {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }).catch(function(err) {
+            console.log('ServiceWorker registration failed: ', err);
+        });
+        }
+        </script>
     <script src="./jquery-3.4.1.min.js"></script>
     <div id="chat-box">
         
