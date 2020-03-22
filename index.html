@@ -7,17 +7,18 @@
     <title>しりとり AI</title>
     <link rel="stylesheet" href="chat_UI.css">
     <script src="https://kit.fontawesome.com/ede971a779.js" crossorigin="anonymous"></script>
-    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="/image/favicon.ico">
 </head>
 
 <body>
     <script>
-        //  <!-- service workerの登録関係 -->
         if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('service_worker.js').then(function(registration) {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        navigator.serviceWorker.register('./serviceworker.js').then(function(registration) {
+        // Serviceworkerが機能出来ていると、開発者ツールのログは表示されます。。アプリ上には表示されません。
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
         }).catch(function(err) {
-            console.log('ServiceWorker registration failed: ', err);
+        // Serviceworkerが機能できなかった時に、開発者ツールのログでerror表示がされます。どこかにエラーが出ているから確認してください。
+        console.log('ServiceWorker registration failed: ', err);
         });
         }
         </script>
