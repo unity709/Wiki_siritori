@@ -1,6 +1,7 @@
 var msg = new SpeechSynthesisUtterance();
 //msg.lang = 'ja-JP'; //言語
 var words = [];
+var Word_history=[];
 var cpu_word = "";
 var next_word = "り";
 var Iswork = false;
@@ -42,6 +43,7 @@ $("#submit").click(function () {
     //処理が終わったら考え中の文字を削除し、結果を入れる
     if (next_word != str_chenge(text, 1)[0]) {
         say("「" + next_word + "」から言葉を始めてね！", $("#chat-box"));
+        obj.scrollTop = obj.scrollHeight;
         $("#text").val("");
         $("#btn").prop("disabled", false);
         $("#submit").prop("disabled", false);
@@ -50,7 +52,19 @@ $("#submit").click(function () {
         $("#btn").css('background-color', '#00bcd4');
         $("#submit").css('background-color', '#00bcd4');
         return;
-    } else {
+    } else if(Word_history.indexOf(text)!=-1){
+        say("「" + text + "」は、もう使われた言葉だよ！", $("#chat-box"));
+        obj.scrollTop = obj.scrollHeight;
+        $("#text").val("");
+        $("#btn").prop("disabled", false);
+        $("#submit").prop("disabled", false);
+        $("#btn_text").text("マイク");
+        $("#submit_text").text("送信");
+        $("#btn").css('background-color', '#00bcd4');
+        $("#submit").css('background-color', '#00bcd4');
+        return;
+    } else{
+        Word_history.push(autotext);
         siritori(text).then(function (value) {
             // 非同期処理成功
             console.log(value);
@@ -140,12 +154,12 @@ speech.onresult = function (e) {
         console.log(e);
         console.log(autotext);//autotextが結果
         //ここから返答処理
-
         $("#chat-box").html($("#chat-box").html() + "<div class=\"kaiwa\"><!–右からの吹き出し–><figure class=\"kaiwa-img-right\"><img src=\"./icons/human_icon.png\" alt=\"no-img2\"><figcaption class=\"kaiwa-img-description\">あなた</figcaption></figure><div class=\"kaiwa-text-left\"><p class=\"kaiwa-text\">「" + autotext + "」</p></div></div><!–右からの吹き出し 終了–>");
         obj.scrollTop = obj.scrollHeight;
         //処理が終わったら考え中の文字を削除し、結果を入れる
         if (next_word != str_chenge(autotext, 1)[0]) {
             say("「" + next_word + "」から言葉を始めてね！", $("#chat-box"));
+            obj.scrollTop = obj.scrollHeight;
             $("#text").val("");
             $("#btn").prop("disabled", false);
             $("#submit").prop("disabled", false);
@@ -154,7 +168,19 @@ speech.onresult = function (e) {
             $("#btn").css('background-color', '#00bcd4');
             $("#submit").css('background-color', '#00bcd4');
             return;
-        } else {
+        } else if(Word_history.indexOf(autotext)!=-1){
+            say("「" + autotext + "」は、もう使われた言葉だよ！", $("#chat-box"));
+            obj.scrollTop = obj.scrollHeight;
+            $("#text").val("");
+            $("#btn").prop("disabled", false);
+            $("#submit").prop("disabled", false);
+            $("#btn_text").text("マイク");
+            $("#submit_text").text("送信");
+            $("#btn").css('background-color', '#00bcd4');
+            $("#submit").css('background-color', '#00bcd4');
+            return;
+        } else{
+            Word_history.push(autotext);
             siritori(autotext).then(function (value) {
                 // 非同期処理成功
                 console.log(value);
@@ -235,7 +261,7 @@ function WikipediaAPI(query, end) {
 
                     var word = value.title;
                     word = word.replace(/ *\([^)]*\) */g, "");
-                    if (NG_word.indexOf(word.slice(-1)) == -1) {
+                    if (NG_word.indexOf(word.slice(-1)) == -1&&Word_history.indexOf(word)==-1) {
                         words.push(word);
                     }
 
