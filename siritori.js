@@ -64,7 +64,7 @@ $("#submit").click(function () {
         $("#submit").css('background-color', '#00bcd4');
         return;
     } else {
-        Word_history.push(autotext);
+        Word_history.push(text);
         siritori(text).then(function (value) {
             // 非同期処理成功
             console.log(value);
