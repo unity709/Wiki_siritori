@@ -1,7 +1,7 @@
 var msg = new SpeechSynthesisUtterance();
 //msg.lang = 'ja-JP'; //言語
 var words = [];
-var Word_history=[];
+var Word_history = [];
 var cpu_word = "";
 var next_word = "り";
 var Iswork = false;
@@ -52,7 +52,7 @@ $("#submit").click(function () {
         $("#btn").css('background-color', '#00bcd4');
         $("#submit").css('background-color', '#00bcd4');
         return;
-    } else if(Word_history.indexOf(text)!=-1){
+    } else if (Word_history.indexOf(text) != -1) {
         say("「" + text + "」は、もう使われた言葉だよ！", $("#chat-box"));
         obj.scrollTop = obj.scrollHeight;
         $("#text").val("");
@@ -63,7 +63,7 @@ $("#submit").click(function () {
         $("#btn").css('background-color', '#00bcd4');
         $("#submit").css('background-color', '#00bcd4');
         return;
-    } else{
+    } else {
         Word_history.push(autotext);
         siritori(text).then(function (value) {
             // 非同期処理成功
@@ -71,7 +71,7 @@ $("#submit").click(function () {
             $("#text").attr("placeholder", "「" + str_chenge(value, -1)[0] + "」から始まる言葉");
             next_word = str_chenge(value, -1)[0]
             say("「" + value + "」", $("#chat-box"))
-
+            Word_history.push(value);
             obj.scrollTop = obj.scrollHeight;
             msg.text = value;
             speechSynthesis.speak(msg);
@@ -168,7 +168,7 @@ speech.onresult = function (e) {
             $("#btn").css('background-color', '#00bcd4');
             $("#submit").css('background-color', '#00bcd4');
             return;
-        } else if(Word_history.indexOf(autotext)!=-1){
+        } else if (Word_history.indexOf(autotext) != -1) {
             say("「" + autotext + "」は、もう使われた言葉だよ！", $("#chat-box"));
             obj.scrollTop = obj.scrollHeight;
             $("#text").val("");
@@ -179,7 +179,7 @@ speech.onresult = function (e) {
             $("#btn").css('background-color', '#00bcd4');
             $("#submit").css('background-color', '#00bcd4');
             return;
-        } else{
+        } else {
             Word_history.push(autotext);
             siritori(autotext).then(function (value) {
                 // 非同期処理成功
@@ -187,7 +187,9 @@ speech.onresult = function (e) {
                 $("#text").attr("placeholder", "「" + str_chenge(value, -1)[0] + "」から始まる言葉");
                 next_word = str_chenge(value, -1)[0]
 
-                say("「" + value + "」", $("#chat-box"))
+                say("「" + value + "」", $("#chat-box"));
+
+                Word_history.push(value);
                 obj.scrollTop = obj.scrollHeight;
                 msg.text = value; speechSynthesis.speak(msg);
                 console.log("処理終了")
@@ -241,7 +243,7 @@ function siritori(user_msg) {
 
 }
 function WikipediaAPI(query, end) {
-    var NG_word = ["針","線", "論", "缶", "天", "点", "覧", "案", "暗", "全", "員", "印", "院", "因", "引", "飲", "運", "温", "円", "縁", "園"
+    var NG_word = ["針", "線", "論", "缶", "天", "点", "覧", "案", "暗", "全", "員", "印", "院", "因", "引", "飲", "運", "温", "円", "縁", "園"
         , "延", "塩", "遠", "音", "恩", "韓", "艦", "金", "菌", "禁", "筋", "君", "勲", "訓", "県", "兼", "券", "件", "剣", "健", "圏"
         , "紺", "産", "酸", "山", "算", "新", "臣", "癌", "玩", "寸", "損", "村", "短", "痰", "担", "沈", "陳", "賃", "典", "品", "貧"
         , "分", "糞", "墳", "粉", "編", "辺", "本", "南", "認", "燃", "粘", "万", "満", "民", "眠", "面", "麺", "綿", "紋", "悶", "四"
@@ -261,7 +263,7 @@ function WikipediaAPI(query, end) {
 
                     var word = value.title;
                     word = word.replace(/ *\([^)]*\) */g, "");
-                    if (NG_word.indexOf(word.slice(-1)) == -1&&Word_history.indexOf(word)==-1) {
+                    if (NG_word.indexOf(word.slice(-1)) == -1 && Word_history.indexOf(word) == -1) {
                         words.push(word);
                     }
 
