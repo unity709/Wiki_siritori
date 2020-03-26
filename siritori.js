@@ -30,7 +30,6 @@ $("#submit").click(function () {
         $("#submit").css('background-color', '#00bcd4');
         return; //何もないなら関数を終了させる
     }
-
     $("#btn").prop("disabled", true);
     $("#btn_text").text("処理中");
     $("#submit").prop("disabled", true);
@@ -96,13 +95,6 @@ $("#submit").click(function () {
             $("#submit").css('background-color', '#00bcd4');
         });
     }
-
-
-
-
-
-
-
 })
 $("#btn").click(function () {
     // 音声認識をスタート
@@ -114,8 +106,6 @@ $("#btn").click(function () {
         $("#submit").prop("disabled", true);
         speech.start();
     } else { return; }
-
-
 });
 speech.onnomatch = function () {
     console.log("認識できませんでした");
@@ -186,9 +176,7 @@ speech.onresult = function (e) {
                 console.log(value);
                 $("#text").attr("placeholder", "「" + str_chenge(value, -1)[0] + "」から始まる言葉");
                 next_word = str_chenge(value, -1)[0]
-
                 say("「" + value + "」", $("#chat-box"));
-
                 Word_history.push(value);
                 obj.scrollTop = obj.scrollHeight;
                 msg.text = value; speechSynthesis.speak(msg);
@@ -212,15 +200,7 @@ speech.onresult = function (e) {
                 Iswork = false;
             });
         }
-
-
-
-
-
-
-
     }
-
 }
 function siritori(user_msg) {
     return new Promise(function (resolve, reject) {
@@ -237,10 +217,7 @@ function siritori(user_msg) {
             cpu_word = words[Math.floor(Math.random() * words.length)]
             resolve(cpu_word);
         })
-
-
     });
-
 }
 function WikipediaAPI(query, end) {
     var NG_word = ["針", "線", "論", "缶", "天", "点", "覧", "案", "暗", "全", "員", "印", "院", "因", "引", "飲", "運", "温", "円", "縁", "園"
@@ -260,13 +237,11 @@ function WikipediaAPI(query, end) {
             console.log(json)
             json.query.prefixsearch.forEach(function (value) {
                 if (value.title != query) {
-
                     var word = value.title;
                     word = word.replace(/ *\([^)]*\) */g, "");
                     if (NG_word.indexOf(word.slice(-1)) == -1 && Word_history.indexOf(word) == -1) {
                         words.push(word);
                     }
-
                 }
             });
             end();
@@ -278,7 +253,6 @@ function str_chenge(str, ran) {
     var range = ran
     if (range == 1) {
         range = [0, 1]
-
     } else {
         range = [-1, undefined]
     }
@@ -328,7 +302,6 @@ function str_chenge(str, ran) {
     } else if (katakana.indexOf(str.slice(range[0], range[1])) != -1) {//カタカナ
         r.push(hiragana[katakana.indexOf(func_str.slice(range[0], range[1]))]);
         r.push(func_str.slice(range[0], range[1]));
-
         console.log(r)
     } else {//漢字
         $.ajax({
@@ -351,7 +324,6 @@ function str_chenge(str, ran) {
                 func_str = func_str.slice(0, 1);
             } else {
                 func_str = func_str.slice(range[0], range[1]);
-
             }
             r.push(func_str.slice(range[0], range[1]));
             r.push(katakana[hiragana.indexOf(func_str.slice(range[0], range[1]))]);
@@ -432,8 +404,6 @@ function str_chenge(str, ran) {
         default:
             break;
     }
-    //バグの場合ここに未使用を挿入
-
     console.log(r);
     return r;
 }
