@@ -8,9 +8,9 @@ var Iswork = false;
 //音声認識の準備
 const obj = document.getElementById("chat-box");
 SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
-const speech = new SpeechRecognition();
 if ('SpeechRecognition' in window) {
     // ユーザのブラウザは音声合成に対応しています。
+const speech = new SpeechRecognition();
 } else {
     alert("このブラウザは音声認識に対応していません")
     $("#btn").hide();
