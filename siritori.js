@@ -131,7 +131,7 @@ speech.onerror = function () {
 };
 //音声自動文字起こし機能
 speech.onresult = function (e) {
-    speech.abort();
+    speech.stop();
     $("#btn_text").text("処理中");
     $("#submit").prop("disabled", true);
     $("#submit_text").text("処理中");
