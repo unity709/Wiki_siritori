@@ -134,7 +134,8 @@ speech.onerror = function () {
 //音声自動文字起こし機能
 speech.onresult = function (e) {
     if (!e.results[0].isFinal) {
-
+        var speechtext = e.results[0][0].transcript
+        console.log(speechtext)
         return;
     }
     $("#btn_text").text("処理中");
