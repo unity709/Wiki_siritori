@@ -15,7 +15,7 @@ if ('SpeechRecognition' in window) {
     $("#btn").hide();
 }
 speech.lang = "ja-JP";
-speech.continuous = true;
+//speech.continuous = true;
 //使用する変数を用意
 $("#submit").click(function () {
     $("#submit").css('background-color', '#999999');
