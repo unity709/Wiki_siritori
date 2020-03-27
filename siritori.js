@@ -133,7 +133,6 @@ speech.onerror = function () {
 //音声自動文字起こし機能
 speech.onresult = function (e) {
     $("#btn_text").text("処理中");
-    $("#submit").prop("disabled", true);
     $("#submit_text").text("処理中");
     $("#submit").css('background-color', '#999999');
     $("#btn").css('background-color', '#999999');
@@ -363,6 +362,8 @@ function str_chenge(str, ran) {
         case "ゎ":
             r[0] = "わ";
             break;
+        case "を":
+            r[0] = "お";
         default:
             break;
     }
@@ -403,6 +404,8 @@ function str_chenge(str, ran) {
         case "ヮ":
             r[1] = "ワ";
             break;
+        case "ヲ":
+            r[0] = "オ";
         default:
             break;
     }
