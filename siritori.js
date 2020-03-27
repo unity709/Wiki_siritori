@@ -131,13 +131,14 @@ speech.onerror = function () {
 };
 //音声自動文字起こし機能
 speech.onresult = function (e) {
+    speech.abort();
     $("#btn_text").text("処理中");
     $("#submit").prop("disabled", true);
     $("#submit_text").text("処理中");
     $("#submit").css('background-color', '#999999');
     $("#btn").css('background-color', '#999999');
     console.log("リザルト")
-    speech.stop();
+   
     if (e.results[0].isFinal) {
         console.log("聞き取り成功！")
         var autotext = e.results[0][0].transcript
