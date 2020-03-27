@@ -16,7 +16,7 @@ if ('SpeechRecognition' in window) {
     $("#btn").hide();
 }
 speech.lang = "ja-JP";
-speech.interimResults
+speech.interimResults=true;
 //speech.continuous = true;
 //使用する変数を用意
 $("#submit").click(function () {
