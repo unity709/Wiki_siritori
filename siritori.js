@@ -16,6 +16,7 @@ if ('SpeechRecognition' in window) {
     $("#btn").hide();
 }
 speech.lang = "ja-JP";
+speech.interimResults
 //speech.continuous = true;
 //使用する変数を用意
 $("#submit").click(function () {
@@ -132,6 +133,10 @@ speech.onerror = function () {
 };
 //音声自動文字起こし機能
 speech.onresult = function (e) {
+    if (!e.results[0].isFinal) {
+
+        return;
+    }
     $("#btn_text").text("処理中");
     $("#submit_text").text("処理中");
     $("#submit").css('background-color', '#999999');
