@@ -85,7 +85,7 @@ p.kaiwa-text:last-child {
   position: absolute;
   content: '';
   border: 10px solid transparent;
-  top: 15px;
+  top: 10px;
   left: -20px;
 }
 
@@ -94,7 +94,7 @@ p.kaiwa-text:last-child {
   content: '';
   border: 10px solid transparent;
   border-right: 10px solid #eee;
-  top: 15px;
+  top: 10px;
   left: -19px;
 }
 

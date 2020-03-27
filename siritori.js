@@ -119,6 +119,8 @@ speech.onnomatch = function () {
     $("#btn").css('background-color', '#00bcd4');
     $("#submit").css('background-color', '#00bcd4');
     Iswork = false;
+    $("#text").val("");
+    $('#text').attr('readonly',false);
 };
 speech.onerror = function () {
     console.log("認識できませんでした");
@@ -130,14 +132,19 @@ speech.onerror = function () {
     $("#btn").css('background-color', '#00bcd4');
     $("#submit").css('background-color', '#00bcd4');
     Iswork = false;
+    $("#text").val("");
+    $('#text').attr('readonly',false);
 };
 //音声自動文字起こし機能
 speech.onresult = function (e) {
     if (!e.results[0].isFinal) {
         var speechtext = e.results[0][0].transcript
         console.log(speechtext)
+        $('#text').attr('readonly',true);
+        $("#text").val(speechtext);
         return;
     }
+    
     $("#btn_text").text("処理中");
     $("#submit_text").text("処理中");
     $("#submit").css('background-color', '#999999');
@@ -150,6 +157,7 @@ speech.onresult = function (e) {
         var autotext = e.results[0][0].transcript
         console.log(e);
         console.log(autotext);//autotextが結果
+        $("#text").val(autotext);
         //ここから返答処理
         $("#chat-box").html($("#chat-box").html() + "<div class=\"kaiwa\"><!–右からの吹き出し–><figure class=\"kaiwa-img-right\"><img src=\"./icons/human_icon.png\" alt=\"no-img2\"><figcaption class=\"kaiwa-img-description\">あなた</figcaption></figure><div class=\"kaiwa-text-left\"><p class=\"kaiwa-text\">「" + autotext + "」</p></div></div><!–右からの吹き出し 終了–>");
         obj.scrollTop = obj.scrollHeight;
@@ -165,6 +173,8 @@ speech.onresult = function (e) {
             $("#btn").css('background-color', '#00bcd4');
             $("#submit").css('background-color', '#00bcd4');
             Iswork = false;
+            $("#text").val("");
+            $('#text').attr('readonly',false);
             return;
         } else if (Word_history.indexOf(autotext) != -1) {
             say("「" + autotext + "」は、もう使われた言葉だよ！", $("#chat-box"));
@@ -177,6 +187,8 @@ speech.onresult = function (e) {
             $("#btn").css('background-color', '#00bcd4');
             $("#submit").css('background-color', '#00bcd4');
             Iswork = false;
+            $("#text").val("");
+            $('#text').attr('readonly',false);
             return;
         } else {
             Word_history.push(autotext);
@@ -197,6 +209,8 @@ speech.onresult = function (e) {
                 $("#submit").prop("disabled", false);
                 $("#submi_text").text("送信");
                 Iswork = false;
+                $("#text").val("");
+                $('#text').attr('readonly',false);
             }).catch(function (error) {
                 // 非同期処理失敗。呼ばれない
                 console.log(error);
@@ -207,6 +221,8 @@ speech.onresult = function (e) {
                 $("#submit").prop("disabled", false);
                 $("#submit_text").text("送信");
                 Iswork = false;
+                $("#text").val("");
+                $('#text').attr('readonly',false);
             });
         }
     }
