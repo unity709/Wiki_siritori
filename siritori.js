@@ -7,16 +7,150 @@ var next_word = "り";
 var Iswork = false;
 //音声認識の準備
 const obj = document.getElementById("chat-box");
-SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
-if ('SpeechRecognition' in window) {
+SpeechRecognition = window.webkitSpeechRecognition ||
+    window.mozSpeechRecognition ||
+    window.msSpeechRecognition ||
+    window.oSpeechRecognition ||
+    window.SpeechRecognition
+var speech;
+if (SpeechRecognition !== undefined) {
     // ユーザのブラウザは音声合成に対応しています。
-const speech = new SpeechRecognition();
+    speech = new SpeechRecognition();
+    speech.lang = "ja-JP";
+    speech.interimResults = true;
+    $("#btn").click(function () {
+        // 音声認識をスタート
+        if (!Iswork) {
+            Iswork = true;
+            $("#btn").prop("disabled", true);
+            $("#submit").prop("disabled", true);
+            $("#btn_text").text("マイクで録音中");
+            $("#btn").css('background-color', '#ff0000');
+            speech.start();
+        } else { return; }
+    });
+    speech.onnomatch = function () {
+        console.log("認識できませんでした");
+        say("認識できませんでした", $("#chat-box"))
+        $("#btn").prop("disabled", false);
+        $("#btn_text").text("マイク");
+        $("#submit").prop("disabled", false);
+        $("#submit_text").text("送信");
+        $("#btn").css('background-color', '#00bcd4');
+        $("#submit").css('background-color', '#00bcd4');
+        Iswork = false;
+        $("#text").val("");
+        $('#text').attr('readonly', false);
+    };
+    speech.onerror = function () {
+        console.log("認識できませんでした");
+        say("認識できませんでした", $("#chat-box"))
+        $("#btn").prop("disabled", false);
+        $("#btn_text").text("マイク");
+        $("#submit").prop("disabled", false);
+        $("#submit_text").text("送信");
+        $("#btn").css('background-color', '#00bcd4');
+        $("#submit").css('background-color', '#00bcd4');
+        Iswork = false;
+        $("#text").val("");
+        $('#text').attr('readonly', false);
+    };
+    //音声自動文字起こし機能
+    speech.onresult = function (e) {
+        if (!e.results[0].isFinal) {
+            var speechtext = e.results[0][0].transcript
+            console.log(speechtext)
+            $('#text').attr('readonly', true);
+            $("#text").val(speechtext);
+            return;
+        }
+
+        $("#btn_text").text("処理中");
+        $("#submit_text").text("処理中");
+        $("#submit").css('background-color', '#999999');
+        $("#btn").css('background-color', '#999999');
+        console.log("リザルト")
+        speech.stop();
+
+        if (e.results[0].isFinal) {
+            console.log("聞き取り成功！")
+            var autotext = e.results[0][0].transcript
+            console.log(e);
+            console.log(autotext);//autotextが結果
+            $("#text").val(autotext);
+            //ここから返答処理
+            $("#chat-box").html($("#chat-box").html() + "<div class=\"kaiwa\"><!–右からの吹き出し–><figure class=\"kaiwa-img-right\"><img src=\"./icons/human_icon.png\" alt=\"no-img2\"><figcaption class=\"kaiwa-img-description\">あなた</figcaption></figure><div class=\"kaiwa-text-left\"><p class=\"kaiwa-text\">「" + autotext + "」</p></div></div><!–右からの吹き出し 終了–>");
+            obj.scrollTop = obj.scrollHeight;
+            //処理が終わったら考え中の文字を削除し、結果を入れる
+            if (next_word != str_chenge(autotext, 1)[0]) {
+                say("「" + next_word + "」から言葉を始めてね！", $("#chat-box"));
+                obj.scrollTop = obj.scrollHeight;
+                $("#text").val("");
+                $("#btn").prop("disabled", false);
+                $("#submit").prop("disabled", false);
+                $("#btn_text").text("マイク");
+                $("#submit_text").text("送信");
+                $("#btn").css('background-color', '#00bcd4');
+                $("#submit").css('background-color', '#00bcd4');
+                Iswork = false;
+                $("#text").val("");
+                $('#text').attr('readonly', false);
+                return;
+            } else if (Word_history.indexOf(autotext) != -1) {
+                say("「" + autotext + "」は、もう使われた言葉だよ！", $("#chat-box"));
+                obj.scrollTop = obj.scrollHeight;
+                $("#text").val("");
+                $("#btn").prop("disabled", false);
+                $("#submit").prop("disabled", false);
+                $("#btn_text").text("マイク");
+                $("#submit_text").text("送信");
+                $("#btn").css('background-color', '#00bcd4');
+                $("#submit").css('background-color', '#00bcd4');
+                Iswork = false;
+                $("#text").val("");
+                $('#text').attr('readonly', false);
+                return;
+            } else {
+                Word_history.push(autotext);
+                siritori(autotext).then(function (value) {
+                    // 非同期処理成功
+                    console.log(value);
+                    $("#text").attr("placeholder", "「" + str_chenge(value, -1)[0] + "」から始まる言葉");
+                    next_word = str_chenge(value, -1)[0]
+                    say("「" + value + "」", $("#chat-box"));
+                    Word_history.push(value);
+                    obj.scrollTop = obj.scrollHeight;
+                    msg.text = value; speechSynthesis.speak(msg);
+                    console.log("処理終了")
+                    $("#btn").prop("disabled", false);
+                    $("#btn").css('background-color', '#00bcd4');
+                    $("#submit").css('background-color', '#00bcd4');
+                    $("#btn_text").text("マイク");
+                    $("#submit").prop("disabled", false);
+                    $("#submi_text").text("送信");
+                    Iswork = false;
+                    $("#text").val("");
+                    $('#text').attr('readonly', false);
+                }).catch(function (error) {
+                    // 非同期処理失敗。呼ばれない
+                    console.log(error);
+                    $("#btn").prop("disabled", false);
+                    $("#btn").css('background-color', '#00bcd4');
+                    $("#submit").css('background-color', '#00bcd4');
+                    $("#btn_text").text("マイク");
+                    $("#submit").prop("disabled", false);
+                    $("#submit_text").text("送信");
+                    Iswork = false;
+                    $("#text").val("");
+                    $('#text').attr('readonly', false);
+                });
+            }
+        }
+    }
 } else {
     alert("このブラウザは音声認識に対応していません")
     $("#btn").hide();
 }
-speech.lang = "ja-JP";
-speech.interimResults=true;
 //speech.continuous = true;
 //使用する変数を用意
 $("#submit").click(function () {
@@ -98,135 +232,7 @@ $("#submit").click(function () {
         });
     }
 })
-$("#btn").click(function () {
-    // 音声認識をスタート
-    if (!Iswork) {
-        Iswork = true;
-        $("#btn").prop("disabled", true);
-        $("#submit").prop("disabled", true);
-        $("#btn_text").text("マイクで録音中");
-        $("#btn").css('background-color', '#ff0000');
-        speech.start();
-    } else { return; }
-});
-speech.onnomatch = function () {
-    console.log("認識できませんでした");
-    say("認識できませんでした", $("#chat-box"))
-    $("#btn").prop("disabled", false);
-    $("#btn_text").text("マイク");
-    $("#submit").prop("disabled", false);
-    $("#submit_text").text("送信");
-    $("#btn").css('background-color', '#00bcd4');
-    $("#submit").css('background-color', '#00bcd4');
-    Iswork = false;
-    $("#text").val("");
-    $('#text').attr('readonly',false);
-};
-speech.onerror = function () {
-    console.log("認識できませんでした");
-    say("認識できませんでした", $("#chat-box"))
-    $("#btn").prop("disabled", false);
-    $("#btn_text").text("マイク");
-    $("#submit").prop("disabled", false);
-    $("#submit_text").text("送信");
-    $("#btn").css('background-color', '#00bcd4');
-    $("#submit").css('background-color', '#00bcd4');
-    Iswork = false;
-    $("#text").val("");
-    $('#text').attr('readonly',false);
-};
-//音声自動文字起こし機能
-speech.onresult = function (e) {
-    if (!e.results[0].isFinal) {
-        var speechtext = e.results[0][0].transcript
-        console.log(speechtext)
-        $('#text').attr('readonly',true);
-        $("#text").val(speechtext);
-        return;
-    }
-    
-    $("#btn_text").text("処理中");
-    $("#submit_text").text("処理中");
-    $("#submit").css('background-color', '#999999');
-    $("#btn").css('background-color', '#999999');
-    console.log("リザルト")
-    speech.stop();
-   
-    if (e.results[0].isFinal) {
-        console.log("聞き取り成功！")
-        var autotext = e.results[0][0].transcript
-        console.log(e);
-        console.log(autotext);//autotextが結果
-        $("#text").val(autotext);
-        //ここから返答処理
-        $("#chat-box").html($("#chat-box").html() + "<div class=\"kaiwa\"><!–右からの吹き出し–><figure class=\"kaiwa-img-right\"><img src=\"./icons/human_icon.png\" alt=\"no-img2\"><figcaption class=\"kaiwa-img-description\">あなた</figcaption></figure><div class=\"kaiwa-text-left\"><p class=\"kaiwa-text\">「" + autotext + "」</p></div></div><!–右からの吹き出し 終了–>");
-        obj.scrollTop = obj.scrollHeight;
-        //処理が終わったら考え中の文字を削除し、結果を入れる
-        if (next_word != str_chenge(autotext, 1)[0]) {
-            say("「" + next_word + "」から言葉を始めてね！", $("#chat-box"));
-            obj.scrollTop = obj.scrollHeight;
-            $("#text").val("");
-            $("#btn").prop("disabled", false);
-            $("#submit").prop("disabled", false);
-            $("#btn_text").text("マイク");
-            $("#submit_text").text("送信");
-            $("#btn").css('background-color', '#00bcd4');
-            $("#submit").css('background-color', '#00bcd4');
-            Iswork = false;
-            $("#text").val("");
-            $('#text').attr('readonly',false);
-            return;
-        } else if (Word_history.indexOf(autotext) != -1) {
-            say("「" + autotext + "」は、もう使われた言葉だよ！", $("#chat-box"));
-            obj.scrollTop = obj.scrollHeight;
-            $("#text").val("");
-            $("#btn").prop("disabled", false);
-            $("#submit").prop("disabled", false);
-            $("#btn_text").text("マイク");
-            $("#submit_text").text("送信");
-            $("#btn").css('background-color', '#00bcd4');
-            $("#submit").css('background-color', '#00bcd4');
-            Iswork = false;
-            $("#text").val("");
-            $('#text').attr('readonly',false);
-            return;
-        } else {
-            Word_history.push(autotext);
-            siritori(autotext).then(function (value) {
-                // 非同期処理成功
-                console.log(value);
-                $("#text").attr("placeholder", "「" + str_chenge(value, -1)[0] + "」から始まる言葉");
-                next_word = str_chenge(value, -1)[0]
-                say("「" + value + "」", $("#chat-box"));
-                Word_history.push(value);
-                obj.scrollTop = obj.scrollHeight;
-                msg.text = value; speechSynthesis.speak(msg);
-                console.log("処理終了")
-                $("#btn").prop("disabled", false);
-                $("#btn").css('background-color', '#00bcd4');
-                $("#submit").css('background-color', '#00bcd4');
-                $("#btn_text").text("マイク");
-                $("#submit").prop("disabled", false);
-                $("#submi_text").text("送信");
-                Iswork = false;
-                $("#text").val("");
-                $('#text').attr('readonly',false);
-            }).catch(function (error) {
-                // 非同期処理失敗。呼ばれない
-                console.log(error);
-                $("#btn").prop("disabled", false);
-                $("#btn").css('background-color', '#00bcd4');
-                $("#submit").css('background-color', '#00bcd4');
-                $("#btn_text").text("マイク");
-                $("#submit").prop("disabled", false);
-                $("#submit_text").text("送信");
-                Iswork = false;
-                $("#text").val("");
-                $('#text').attr('readonly',false);
-            });
-        }
-    }
-}
+
 function siritori(user_msg) {
     return new Promise(function (resolve, reject) {
         words = [];
