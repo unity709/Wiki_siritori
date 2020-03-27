@@ -102,9 +102,9 @@ $("#btn").click(function () {
     if (!Iswork) {
         Iswork = true;
         $("#btn").prop("disabled", true);
+        $("#submit").prop("disabled", true);
         $("#btn_text").text("マイクで録音中");
         $("#btn").css('background-color', '#ff0000');
-        $("#submit").prop("disabled", true);
         speech.start();
     } else { return; }
 });
@@ -158,6 +158,7 @@ speech.onresult = function (e) {
             $("#submit_text").text("送信");
             $("#btn").css('background-color', '#00bcd4');
             $("#submit").css('background-color', '#00bcd4');
+            Iswork = false;
             return;
         } else if (Word_history.indexOf(autotext) != -1) {
             say("「" + autotext + "」は、もう使われた言葉だよ！", $("#chat-box"));
@@ -169,6 +170,7 @@ speech.onresult = function (e) {
             $("#submit_text").text("送信");
             $("#btn").css('background-color', '#00bcd4');
             $("#submit").css('background-color', '#00bcd4');
+            Iswork = false;
             return;
         } else {
             Word_history.push(autotext);
