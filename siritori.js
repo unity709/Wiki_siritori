@@ -32,6 +32,7 @@ if (SpeechRecognition !== undefined) {
     speech.onnomatch = function () {
         console.log("認識できませんでした");
         say("認識できませんでした", $("#chat-box"))
+        obj.scrollTop = obj.scrollHeight;
         $("#btn").prop("disabled", false);
         $("#btn_text").text("マイク");
         $("#submit").prop("disabled", false);
@@ -45,6 +46,7 @@ if (SpeechRecognition !== undefined) {
     speech.onerror = function () {
         console.log("認識できませんでした");
         say("認識できませんでした", $("#chat-box"))
+        obj.scrollTop = obj.scrollHeight;
         $("#btn").prop("disabled", false);
         $("#btn_text").text("マイク");
         $("#submit").prop("disabled", false);
@@ -134,6 +136,8 @@ if (SpeechRecognition !== undefined) {
                 }).catch(function (error) {
                     // 非同期処理失敗。呼ばれない
                     console.log(error);
+                    say("エラー：" + error, $("#chat-box"))
+                    obj.scrollTop = obj.scrollHeight;
                     $("#btn").prop("disabled", false);
                     $("#btn").css('background-color', '#00bcd4');
                     $("#submit").css('background-color', '#00bcd4');
@@ -255,9 +259,9 @@ function WikipediaAPI(query, end) {
         , "延", "塩", "遠", "音", "恩", "韓", "艦", "金", "菌", "禁", "筋", "君", "勲", "訓", "県", "兼", "券", "件", "剣", "健", "圏"
         , "紺", "産", "酸", "山", "算", "新", "臣", "癌", "玩", "寸", "損", "村", "短", "痰", "担", "沈", "陳", "賃", "典", "品", "貧"
         , "分", "糞", "墳", "粉", "編", "辺", "本", "南", "認", "燃", "粘", "万", "満", "民", "眠", "面", "麺", "綿", "紋", "悶", "四"
-        , "欄", "乱", "卵", "覧", "濫", "林", "倫", "麟", "錬", "連", "練", "恋", "湾", "椀", "腕", "ん", "ン"];
+        , "欄", "乱", "卵", "覧", "濫", "林", "倫", "麟", "錬", "連", "練", "恋", "湾", "椀", "腕", "館", "ん", "ン"];
     //API呼び出し
-    console.log(query)
+    console.log(query);
     $.ajax({
         type: "GET",
         timeout: 10000,
