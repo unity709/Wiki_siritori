@@ -1,3 +1,21 @@
+"use strict";
+registSW();
+
+function registSW() {
+
+    // Service Worker 対応ブラウザの場合、スコープに基づいてService Worker を登録する
+  
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./sw.js', { scope: './' }).then(function (registration) {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, function (err) {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  }
+
 var msg = new SpeechSynthesisUtterance();
 //msg.lang = 'ja-JP'; //言語
 var words = [];

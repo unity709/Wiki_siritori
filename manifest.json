@@ -1,0 +1,15 @@
+{
+    "short_name": "Wikiしりとり",
+    "name": "WikipediaしりとりAI",
+    "icons": [
+      {
+        "src": "./icons/icon.jpg",
+        "type": "image/jpg",
+        "sizes": "192x192"
+      }
+    ],
+    "start_url": "./index.html",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#00C721F"
+  }
