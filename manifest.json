@@ -3,19 +3,15 @@
     "name": "WikipediaしりとりAI",
     "icons": [
       {
-        "src": "./icons/icon.jpg",
-        "type": "image/jpeg",
+        "src": "./icons/icon.png",
+        "type": "image/png",
         "sizes": "192x192"
-      },
-      {
-        "src":"./icons/icon-256.jpg",
-        "sizes":"256x256",
-        "type": "imager/jpeg"
       }
     ],
     "Scope": "/Wiki_siritori/",
     "start_url": "./index.html",
     "display": "standalone",
     "orientation": "portrait",
-    "background_color": "#00C721F"
+    "background_color": "#3E4EB8",
+    "theme_color": "#2F3BA2"
   }
