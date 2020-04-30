@@ -19,10 +19,10 @@ if ('serviceWorker' in navigator) {
     //オフライン
     const reload=confirm("インターネットに接続してください\n再読み込みしますか？");
     if(reload){
-        location.reload();
+        location.reload(true);
     }else{
         window.addEventListener("online",(e)=>{
-            location.reload()
+            location.reload(true)
         })
         alert("インターネットにつながないとしりとりはできません。");
     }
@@ -31,10 +31,10 @@ if ('serviceWorker' in navigator) {
  //オフライン
  const reload=confirm("インターネットに接続してください\n再読み込みしますか？");
  if(reload){
-     location.reload();
+     location.reload(true);
  }else{
      window.addEventListener("online",(e)=>{
-         location.reload()
+         location.reload(true)
      })
      alert("インターネットにつながないとしりとりはできません。");
  }
