@@ -7,7 +7,18 @@ const urlsToCache = [
   './jquery-3.4.1.min.js',
   './icons/human_icon.png',
   './icons/Wikipedia-logo-v2-ja.png',
-  './ede971a779.js'
+  './font_icon/css/all.min.css',
+  './font_icon/webfonts/fa-regular-400.eot',
+  './font_icon/webfonts/fa-regular-400.svg',
+  './font_icon/webfonts/fa-regular-400.ttf',
+  './font_icon/webfonts/fa-regular-400.woff',
+  './font_icon/webfonts/fa-regular-400.woff2',
+  './font_icon/webfonts/fa-solid-900.eot',
+  './font_icon/webfonts/fa-solid-900.svg',
+  './font_icon/webfonts/fa-solid-900.ttf',
+  './font_icon/webfonts/fa-solid-900.woff',
+  './font_icon/webfonts/fa-solid-900.woff2'
+  //'./ede971a779.js'
 ];
 const CACHE_KEYS = [
   CACHE_NAME
