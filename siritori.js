@@ -1,4 +1,5 @@
 //"use strict";
+
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./serviceWorker.js')
      .then(
@@ -12,6 +13,32 @@ if ('serviceWorker' in navigator) {
      });
    }
 
+   if(navigator.onLine){
+    //オンライン
+    }else{
+    //オフライン
+    const reload=confirm("インターネットに接続してください\n再読み込みしますか？");
+    if(reload){
+        location.reload();
+    }else{
+        window.addEventListener("online",(e)=>{
+            location.reload()
+        })
+        alert("インターネットにつながないとしりとりはできません。");
+    }
+    }
+    window.addEventListener("offline",(e)=>{
+ //オフライン
+ const reload=confirm("インターネットに接続してください\n再読み込みしますか？");
+ if(reload){
+     location.reload();
+ }else{
+     window.addEventListener("online",(e)=>{
+         location.reload()
+     })
+     alert("インターネットにつながないとしりとりはできません。");
+ }
+    })
 var msg = new SpeechSynthesisUtterance();
 //msg.lang = 'ja-JP'; //言語
 var words = [];
