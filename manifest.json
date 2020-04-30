@@ -1,6 +1,6 @@
 {
-    "short_name": "Wikiしりとり",
-    "name": "WikipediaしりとりAI",
+    "short_name": "Wiki しりとり",
+    "name": "Wikipedia しりとりAI",
     "icons": [
       {
         "src": "./icons/icon.png",
