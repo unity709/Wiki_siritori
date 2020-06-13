@@ -367,7 +367,7 @@ function str_chenge(str, ran) {
         "バ", "ビ", "ブ", "ベ", "ボ",]
     var r = [];
     var func_str = str;
-    if (func_str.slice(range[0], range[1]) == "ー" || func_str.slice(range[0], range[1]) == "-" || func_str.slice(range[0], range[1]) == "!" || func_str.slice(range[0], range[1]) == "?" || func_str.slice(range[0], range[1]) == "！" || func_str.slice(range[0], range[1]) == "？" || func_str.slice(range[0], range[1]) == "〜" ) {
+    if (func_str.slice(range[0], range[1]) == "ー" || func_str.slice(range[0], range[1]) == "-" || func_str.slice(range[0], range[1]) == "!" || func_str.slice(range[0], range[1]) == "?" || func_str.slice(range[0], range[1]) == "！" || func_str.slice(range[0], range[1]) == "？" || func_str.slice(range[0], range[1]) == "〜" || func_str.slice(range[0], range[1]) == "、"|| func_str.slice(range[0], range[1]) == "。") {
         func_str = func_str.slice(-2);
         func_str = func_str.slice(0, 1);
     }
