@@ -290,18 +290,67 @@ function siritori(user_msg) {
         });
         Promise.all([taskA, taskB]).then(function () {
             console.log(words);
-            cpu_word = words[Math.floor(Math.random() * words.length)]
-            resolve(cpu_word);
+            cpu_word = words[Math.floor(Math.random() * words.length)]        
+            
+            if(str_chenge(cpu_word,-1)[0]=="ん"){
+                words = [];
+                var task1 = new Promise(function (resolve, reject) {
+                    WikipediaAPI(chenges[0], resolve);
+                });
+                var task2 = new Promise(function (resolve, reject) {
+                    WikipediaAPI(chenges[1], resolve);
+                });
+               Promise.all([task1,task2]).then(function () {
+                    cpu_word = words[Math.floor(Math.random() * words.length)]        
+                    if(str_chenge(cpu_word,-1)[0]=="ん"){
+                        words = [];
+                        var task1 = new Promise(function (resolve, reject) {
+                            WikipediaAPI(chenges[0], resolve);
+                        });
+                        var task2 = new Promise(function (resolve, reject) {
+                            WikipediaAPI(chenges[1], resolve);
+                        });
+                       Promise.all([task1,task2]).then(function () {
+                            cpu_word = words[Math.floor(Math.random() * words.length)]        
+                            if(str_chenge(cpu_word,-1)[0]=="ん"){
+                                words = [];
+                                var task1 = new Promise(function (resolve, reject) {
+                                    WikipediaAPI(chenges[0], resolve);
+                                });
+                                var task2 = new Promise(function (resolve, reject) {
+                                    WikipediaAPI(chenges[1], resolve);
+                                });
+                               Promise.all([task1,task2]).then(function () {
+                                    cpu_word = words[Math.floor(Math.random() * words.length)]        
+                                })
+                                     
+                            }else{
+                                resolve(cpu_word);
+                            }
+                        })
+                             
+                    }else{
+                        resolve(cpu_word);
+                    }
+                })
+                     
+            }else{
+                resolve(cpu_word);
+            }
+
+            
         })
     });
 }
 function WikipediaAPI(query, end) {
-    var NG_word = ["針", "線", "論", "缶", "天", "点", "覧", "案", "暗", "全", "員", "印", "院", "因", "引", "飲", "運", "温", "円", "縁", "園"
+//もっと効率的な漢字の「ん」の判定方法ないかなー
+    var NG_word =[""] /*["針", "線", "論", "缶", "天", "点", "覧", "案", "暗", "全", "員", "印", "院", "因", "引", "飲", "運", "温", "円", "縁", "園"
         , "延", "塩", "遠", "音", "恩", "韓", "艦", "金", "菌", "禁", "筋", "君", "勲", "訓", "県", "兼", "券", "件", "剣", "健", "圏"
         , "紺", "産", "酸", "山", "算", "新", "臣", "癌", "玩", "寸", "損", "村", "短", "痰", "担", "沈", "陳", "賃", "典", "品", "貧"
         , "分", "糞", "墳", "粉", "編", "辺", "本", "南", "認", "燃", "粘", "万", "満", "民", "眠", "面", "麺", "綿", "紋", "悶", "四"
         , "欄", "乱", "卵", "覧", "濫", "林", "倫", "麟", "錬", "連", "練", "恋", "湾", "椀", "腕", "館", "ん", "ン"];
-    //API呼び出し
+    */
+        //API呼び出し
     console.log(query);
     $.ajax({
         type: "GET",
@@ -325,6 +374,15 @@ function WikipediaAPI(query, end) {
     });
 
 }
+/*  
+    引数ran
+    1 先頭切り出し
+    -1 末尾切り出し
+
+    自分で書いたのにわからなくなった
+    おちゃめなんだからーーー
+    うふふふふ
+*/
 function str_chenge(str, ran) {
     var range = ran
     if (range == 1) {
@@ -367,11 +425,16 @@ function str_chenge(str, ran) {
         "バ", "ビ", "ブ", "ベ", "ボ",]
     var r = [];
     var func_str = str;
-    if (func_str.slice(range[0], range[1]) == "ー" || func_str.slice(range[0], range[1]) == "-" || func_str.slice(range[0], range[1]) == "!" || func_str.slice(range[0], range[1]) == "?" || func_str.slice(range[0], range[1]) == "！" || func_str.slice(range[0], range[1]) == "？" || func_str.slice(range[0], range[1]) == "〜" || func_str.slice(range[0], range[1]) == "、"|| func_str.slice(range[0], range[1]) == "。"||func_str.slice(range[0], range[1]) == ".")  {
-        func_str = func_str.slice(-2);
-        func_str = func_str.slice(0, 1);
-    }
-    if (hiragana.indexOf(func_str.slice(range[0], range[1])) != -1) {//ひらがな
+
+    //しりとり処理除外対象が二回連続でも対応
+    
+    //const del_str =func_str.slice(range[0], range[1]) != "ー" && func_str.slice(range[0], range[1]) != "-" && func_str.slice(range[0], range[1]) != "!" && func_str.slice(range[0], range[1]) != "?" && func_str.slice(range[0], range[1]) != "！" && func_str.slice(range[0], range[1]) != "？" && func_str.slice(range[0], range[1]) != "〜" && func_str.slice(range[0], range[1]) != "、"&&func_str.slice(range[0], range[1]) != "。"&&func_str.slice(range[0], range[1]) != "."
+    
+   
+   
+    
+   
+   if (hiragana.indexOf(func_str.slice(range[0], range[1])) != -1) {//ひらがな
         r.push(func_str.slice(range[0], range[1]));
         r.push(katakana[hiragana.indexOf(func_str.slice(range[0], range[1]))]);
         console.log(r)
@@ -395,18 +458,24 @@ function str_chenge(str, ran) {
             }),
         }).done(function (data) {
             func_str = data.converted;
-            if (func_str.slice(range[0], range[1]) == "ー") {
-                func_str = func_str.slice(-2);
-                func_str = func_str.slice(0, 1);
-            } else {
-                func_str = func_str.slice(range[0], range[1]);
+        const del_word=["ー","-","!","！","？","?","～","~","/","_","、","。",".","・","…","'","\"","#",")","(","￥","@","「","」"]
+            if(range[0]==-1){
+                if(del_word.indexOf(func_str.slice(-1)) !=-1){
+                    do {
+                       func_str= func_str.slice(0,func_str.length - 1)                    
+                    }  while ( del_word.indexOf(func_str.slice(-1)) !=-1)        
+                               func_str=func_str.slice(-1)
+                } else {
+                    func_str = func_str.slice(range[0], range[1]);
+                }
             }
-            r.push(func_str.slice(range[0], range[1]));
-            r.push(katakana[hiragana.indexOf(func_str.slice(range[0], range[1]))]);
+            
+            r.push(func_str.slice(range[0], range[1]));// ひらがなを rに追加
+            r.push(katakana[hiragana.indexOf(func_str.slice(range[0], range[1]))]);//カタカナをr に追加
             console.log(r)
         });
     }
-    switch (r[0]) {//小文字変換　ひらがな
+    switch (r[0]) {//小文字変換　ひらがな　もっといい方法あるかな？
         case "ぁ":
             r[0] = "あ";
             break;
@@ -487,6 +556,9 @@ function str_chenge(str, ran) {
     console.log(r);
     return r;
 }
-function say(text, element) {
+function say(text, element) {// せいする関数
     element.html(element.html() + "<div class=\"kaiwa\"><!–左からの吹き出し–><figure class=\"kaiwa-img-left\"><img src=\"./icons/Wikipedia-logo-v2-ja.png\" alt=\"no-img2\"><figcaption class=\"kaiwa-img-description\">しりとり AI</figcaption></figure><div class=\"kaiwa-text-right\"><p class=\"kaiwa-text\">" + text + "</p></div></div><!–左からの吹き出し 終了–>")
 }
+/*
+結構がんばったこのソースコードを誰かほめてくれぇぇぇぇぇぇぇぇぇぇぇぇぇぇぇぇぇ！！！！！！！！
+*/
