@@ -198,7 +198,24 @@ if (SpeechRecognition !== undefined) {
 }
 //speech.continuous = true;
 //使用する変数を用意
-$("#submit").click(function () {
+var $ta = $("#text");
+
+$(document).on("keypress", "#text", function(e) {
+  if (e.keyCode == 13) { // Enterが押された
+    if (e.shiftKey) { // Shiftキーも押された
+      $.noop();
+    } else if ($ta.val().replace(/\s/g, "").length > 0) {
+      e.preventDefault();
+      if($("#submit_text").text!="処理中"){
+        submit()
+      }
+      
+    }
+  } else {
+    $.noop();
+  }
+});
+function submit () {
     $("#submit").css('background-color', '#999999');
     $("#btn").css('background-color', '#999999');
     var text = $("#text").val();
@@ -276,8 +293,8 @@ $("#submit").click(function () {
             $("#submit").css('background-color', '#00bcd4');
         });
     }
-})
-
+}
+$("#submit").click(submit)
 function siritori(user_msg) {
     return new Promise(function (resolve, reject) {
         words = [];
@@ -423,7 +440,9 @@ function str_chenge(str, ran) {
             }),
         }).done(function (data) {
             func_str = data.converted;
-        const del_word=["ー","-","!","！","？","?","～","~","/","_","、","。",".","・","…","'","\"","#",")","(","￥","@","「","」"]
+        const del_word=["ー","-","!","！","？","?",
+        "～","〜","~","/","_","、","。",".","・","…",
+        "'","\"","#",")","(","￥","@","「","」","’","”"]
             if(range[0]==-1){
                 if(del_word.includes(func_str.slice(-1))){
                     do {

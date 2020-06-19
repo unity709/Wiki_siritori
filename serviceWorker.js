@@ -1,5 +1,5 @@
 // Service Worker のバージョンとキャッシュする App Shell を定義する
-const CACHE_NAME = 'Wiki-Shiritori-v2'
+const CACHE_NAME = 'Wiki-Shiritori-v3'
 const urlsToCache = [
   './index.html',
   './siritori.js',
