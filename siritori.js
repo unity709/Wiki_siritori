@@ -293,46 +293,11 @@ function siritori(user_msg) {
             cpu_word = words[Math.floor(Math.random() * words.length)]        
             
             if(str_chenge(cpu_word,-1)[0]=="ん"){
-                words = [];
-                var task1 = new Promise(function (resolve, reject) {
-                    WikipediaAPI(chenges[0], resolve);
-                });
-                var task2 = new Promise(function (resolve, reject) {
-                    WikipediaAPI(chenges[1], resolve);
-                });
-               Promise.all([task1,task2]).then(function () {
-                    cpu_word = words[Math.floor(Math.random() * words.length)]        
-                    if(str_chenge(cpu_word,-1)[0]=="ん"){
-                        words = [];
-                        var task1 = new Promise(function (resolve, reject) {
-                            WikipediaAPI(chenges[0], resolve);
-                        });
-                        var task2 = new Promise(function (resolve, reject) {
-                            WikipediaAPI(chenges[1], resolve);
-                        });
-                       Promise.all([task1,task2]).then(function () {
-                            cpu_word = words[Math.floor(Math.random() * words.length)]        
-                            if(str_chenge(cpu_word,-1)[0]=="ん"){
-                                words = [];
-                                var task1 = new Promise(function (resolve, reject) {
-                                    WikipediaAPI(chenges[0], resolve);
-                                });
-                                var task2 = new Promise(function (resolve, reject) {
-                                    WikipediaAPI(chenges[1], resolve);
-                                });
-                               Promise.all([task1,task2]).then(function () {
-                                    cpu_word = words[Math.floor(Math.random() * words.length)]        
-                                })
-                                     
-                            }else{
-                                resolve(cpu_word);
-                            }
-                        })
-                             
-                    }else{
-                        resolve(cpu_word);
-                    }
-                })
+                do{
+                    words.splice(words.indexOf(cpu_word),words.indexOf(cpu_word))
+                    cpu_word = words[Math.floor(Math.random() * words.length)]
+                }while(str_chenge(cpu_word,-1)[0]=="ん")
+                resolve(cpu_word);
                      
             }else{
                 resolve(cpu_word);
@@ -460,10 +425,10 @@ function str_chenge(str, ran) {
             func_str = data.converted;
         const del_word=["ー","-","!","！","？","?","～","~","/","_","、","。",".","・","…","'","\"","#",")","(","￥","@","「","」"]
             if(range[0]==-1){
-                if(del_word.indexOf(func_str.slice(-1)) !=-1){
+                if(del_word.includes(func_str.slice(-1))){
                     do {
                        func_str= func_str.slice(0,func_str.length - 1)                    
-                    }  while ( del_word.indexOf(func_str.slice(-1)) !=-1)        
+                    }  while (del_word.includes(func_str.slice(-1)))        
                                func_str=func_str.slice(-1)
                 } else {
                     func_str = func_str.slice(range[0], range[1]);
