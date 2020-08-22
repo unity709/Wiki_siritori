@@ -533,7 +533,7 @@ function str_chenge(str, ran) {
             r[1] = "ワ";
             break;
         case "ヲ":
-            r[0] = "オ";
+            r[1] = "オ";
         default:
             break;
     }
