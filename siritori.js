@@ -54,6 +54,7 @@ SpeechRecognition = window.webkitSpeechRecognition ||
     window.oSpeechRecognition ||
     window.SpeechRecognition
 var speech;
+const switchButton =document.getElementById("mycheck");
 if (SpeechRecognition !== undefined) {
     // ユーザのブラウザは音声合成に対応しています。
     speech = new SpeechRecognition();
@@ -163,7 +164,12 @@ if (SpeechRecognition !== undefined) {
                     say("「" + value + "」", $("#chat-box"));
                     Word_history.push(value);
                     obj.scrollTop = obj.scrollHeight;
-                    msg.text = value; speechSynthesis.speak(msg);
+                    
+                    if(switchButton.checked){
+                        msg.text = value; 
+                        speechSynthesis.speak(msg);
+                    }
+                    
                     console.log("処理終了")
                     $("#btn").prop("disabled", false);
                     $("#btn").css('background-color', '#00bcd4');
@@ -271,6 +277,7 @@ function submit () {
             Word_history.push(value);
             obj.scrollTop = obj.scrollHeight;
             msg.text = value;
+            
             speechSynthesis.speak(msg);
             console.log("処理終了");
             $("#text").val("");
