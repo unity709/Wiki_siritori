@@ -276,9 +276,12 @@ function submit () {
             say("「" + value + "」", $("#chat-box"))
             Word_history.push(value);
             obj.scrollTop = obj.scrollHeight;
-            msg.text = value;
             
-            speechSynthesis.speak(msg);
+            if(switchButton.checked){
+                msg.text = value; 
+                speechSynthesis.speak(msg);
+            }
+            
             console.log("処理終了");
             $("#text").val("");
             $("#submit").prop("disabled", false);
